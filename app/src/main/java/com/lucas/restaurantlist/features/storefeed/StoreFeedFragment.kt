@@ -31,12 +31,17 @@ class StoreFeedFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_store_feed, container, false)
         swipeRefreshLayout = view.findViewById(R.id.swipe_container)
 
-        storeFeedAdapter = StoreFeedAdapter()
+        storeFeedAdapter = StoreFeedAdapter { store ->
+            val detailsFragment = StoreDetailsFragment.newInstance(store)
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.container, detailsFragment)
+                .addToBackStack(null)
+                .commit()
+        }
         recyclerView = view.findViewById(R.id.stores_view)
         recyclerView.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(activity)
-            // TODO uncomment the line below whe Adapter is implemented
              adapter = storeFeedAdapter
         }
         return view

@@ -1,9 +1,11 @@
 package com.lucas.restaurantlist.data.model
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 /**
  * Store remote data model.
+ * Serializable to allow passing between fragments
  */
 data class StoreResponse(
     @SerializedName("id")
@@ -18,4 +20,4 @@ data class StoreResponse(
     val status: String,
     @SerializedName("delivery_fee")
     val deliveryFeeCents: String
-)
+) : Serializable

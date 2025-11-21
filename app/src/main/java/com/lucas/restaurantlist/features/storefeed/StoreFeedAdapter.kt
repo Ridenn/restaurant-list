@@ -13,7 +13,9 @@ import com.lucas.restaurantlist.data.model.StoreResponse
 /**
  * A RecyclerView.Adapter to populate the screen with a store feed.
  */
-class StoreFeedAdapter: RecyclerView.Adapter<StoreItemViewHolder>() {
+class StoreFeedAdapter(
+    private val onItemClick: (StoreResponse) -> Unit
+): RecyclerView.Adapter<StoreItemViewHolder>() {
 
     private val diffUtil = object : DiffUtil.ItemCallback<StoreResponse>() {
         override fun areItemsTheSame(oldItem: StoreResponse, newItem: StoreResponse): Boolean {
@@ -36,7 +38,7 @@ class StoreFeedAdapter: RecyclerView.Adapter<StoreItemViewHolder>() {
 
     override fun onBindViewHolder(holder: StoreItemViewHolder, position: Int) {
         val store = listDiffer.currentList[position]
-        holder.bind(store)
+        holder.bind(store, onItemClick)
     }
 
     override fun getItemCount(): Int = listDiffer.currentList.size
@@ -48,8 +50,9 @@ class StoreFeedAdapter: RecyclerView.Adapter<StoreItemViewHolder>() {
  * Holds the view for the Store item.
  */
 class StoreItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    fun bind(store: StoreResponse) {
+    fun bind(store: StoreResponse, onItemClick: (StoreResponse) -> Unit) {
         itemView.findViewById<TextView>(R.id.name).text = store.name
         itemView.findViewById<TextView>(R.id.description).text = store.description
+        itemView.setOnClickListener { onItemClick(store) }
     }
 }

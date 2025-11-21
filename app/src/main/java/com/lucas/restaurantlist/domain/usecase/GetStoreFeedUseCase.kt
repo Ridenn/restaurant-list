@@ -14,7 +14,8 @@ class GetStoreFeedUseCase(
 ) {
     suspend operator fun invoke(latitude: Double, longitude: Double): List<StoreResponse> {
         val stores = repository.getStoreFeed(latitude, longitude)
-        return stores.filter { it.status == "Opened" }
+        return stores.distinctBy { it.id }
             .sortedBy { it.name }
+            //.filter { it.status == "Opened" }
     }
 }
