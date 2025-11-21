@@ -26,9 +26,11 @@ class StoreDetailsFragment : Fragment() {
         val store = arguments?.getSerializable(ARG_STORE) as? StoreResponse
 
         store?.let {
+            val status = if (it.status == "Opened" || it.status == "Closed") it.status else "Opens in: ${it.status}"
+
             view.findViewById<TextView>(R.id.name).text = it.name
             view.findViewById<TextView>(R.id.description).text = it.description
-            view.findViewById<TextView>(R.id.status).text = it.status
+            view.findViewById<TextView>(R.id.status).text = status
             view.findViewById<TextView>(R.id.delivery_fee).text = "Delivery Fee: ${it.deliveryFeeCents}"
 
             val coverImage = view.findViewById<ImageView>(R.id.cover_image)

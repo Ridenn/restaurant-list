@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.lucas.restaurantlist.R
+import com.lucas.restaurantlist.data.model.StoreResponse
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -31,13 +32,7 @@ class StoreFeedFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_store_feed, container, false)
         swipeRefreshLayout = view.findViewById(R.id.swipe_container)
 
-        storeFeedAdapter = StoreFeedAdapter { store ->
-            val detailsFragment = StoreDetailsFragment.newInstance(store)
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.container, detailsFragment)
-                .addToBackStack(null)
-                .commit()
-        }
+        storeFeedAdapter = StoreFeedAdapter { store -> goToDetailsScreen(store) }
         recyclerView = view.findViewById(R.id.stores_view)
         recyclerView.apply {
             setHasFixedSize(true)
@@ -80,6 +75,14 @@ class StoreFeedFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun goToDetailsScreen(store: StoreResponse) {
+        val detailsFragment = StoreDetailsFragment.newInstance(store)
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.container, detailsFragment)
+            .addToBackStack(null)
+            .commit()
     }
 
     companion object {
