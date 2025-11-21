@@ -3,13 +3,13 @@ package com.lucas.restaurantlist.features.login
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lucas.restaurantlist.data.model.LoginResponse
-import com.lucas.restaurantlist.domain.repository.LoginRepository
+import com.lucas.restaurantlist.domain.usecase.RequestLoginUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class LoginViewModel(
-    private val repository: LoginRepository
+    private val requestLoginUseCase: RequestLoginUseCase
 ) : ViewModel() {
 
     sealed class LoginState {
@@ -33,7 +33,7 @@ class LoginViewModel(
 //                _getLoginState.value = LoginState.Error("Invalid password format.")
 //            }
 
-            val response = repository.requestLogin(email, password)
+            val response = requestLoginUseCase(email, password)
             _getLoginState.value = LoginState.Success(response)
         } catch (e: Exception) {
             _getLoginState.value = LoginState.Error("Login failed, try again.")
