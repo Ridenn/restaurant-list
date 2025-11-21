@@ -25,22 +25,12 @@ class LoginViewModel(
         _getLoginState.value = LoginState.Loading
 
         try {
-//            if (!validateEmail(email)) {
-//                _getLoginState.value = LoginState.Error("Wrong email format.")
-//            }
-//
-//            if (!validatePassword(password)) {
-//                _getLoginState.value = LoginState.Error("Invalid password format.")
-//            }
-
             val response = requestLoginUseCase(email, password)
             _getLoginState.value = LoginState.Success(response)
+        } catch (e: IllegalArgumentException) {
+            _getLoginState.value = LoginState.Error(e.message ?: "Invalid input")
         } catch (e: Exception) {
             _getLoginState.value = LoginState.Error("Login failed, try again.")
         }
     }
-
-    private fun validateEmail(email: String): Boolean = email.contains("@")
-
-    private fun validatePassword(password: String): Boolean = password.length > 5
 }
