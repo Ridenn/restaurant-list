@@ -2,6 +2,8 @@ package com.lucas.restaurantlist.domain.usecase
 
 import com.lucas.restaurantlist.data.model.StoreResponse
 import com.lucas.restaurantlist.domain.repository.StoreFeedRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 /**
  * Use case for retrieving the store feed.
@@ -12,10 +14,12 @@ import com.lucas.restaurantlist.domain.repository.StoreFeedRepository
 class GetStoreFeedUseCase(
     private val repository: StoreFeedRepository
 ) {
-    suspend operator fun invoke(latitude: Double, longitude: Double): List<StoreResponse> {
-        val stores = repository.getStoreFeed(latitude, longitude)
-        return stores.distinctBy { it.id }
-            .sortedBy { it.name }
-            //.filter { it.status == "Opened" }
+    operator fun invoke(latitude: Double, longitude: Double): Flow<List<StoreResponse>> {
+        return repository.getStoreFeed(latitude, longitude)
+            .map { stores ->
+                stores.distinctBy { it.id }
+                    .sortedBy { it.name }
+                //.filter { it.status == "Opened" }
+            }
     }
 }

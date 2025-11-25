@@ -1,7 +1,8 @@
 package com.lucas.restaurantlist.domain.repository
 
 import com.lucas.restaurantlist.data.model.StoreResponse
+import kotlinx.coroutines.flow.Flow
 
 interface StoreFeedRepository {
-    suspend fun getStoreFeed(latitude: Double, longitude: Double): List<StoreResponse>
+    fun getStoreFeed(latitude: Double, longitude: Double): Flow<List<StoreResponse>>
 }

@@ -1,5 +1,6 @@
 package com.lucas.restaurantlist.features.storefeed
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lucas.restaurantlist.Constants.DEFAULT_LATITUDE
@@ -30,9 +31,12 @@ class StoreFeedViewModel(
         _getStoreFeedState.value = StoreFeedState.Loading
 
         try {
-            val response = getStoreFeedUseCase(DEFAULT_LATITUDE, DEFAULT_LONGITUDE)
-            _getStoreFeedState.value = StoreFeedState.BindData(response)
+            getStoreFeedUseCase(DEFAULT_LATITUDE, DEFAULT_LONGITUDE)
+                .collect { response ->
+                    _getStoreFeedState.value = StoreFeedState.BindData(response)
+                }
         } catch (e: Exception) {
+            Log.e("Error", "$e")
             _getStoreFeedState.value = StoreFeedState.Error
         }
     }
