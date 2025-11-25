@@ -6,12 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.lucas.restaurantlist.R
 import com.lucas.restaurantlist.data.model.StoreResponse
+import com.lucas.restaurantlist.features.storedetails.StoreDetailsFragment
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -54,23 +57,24 @@ class StoreFeedFragment : Fragment() {
 
     private fun setupViewModelObservers() {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.getStoreFeedState.collect { state ->
-                when(state) {
-                    is StoreFeedViewModel.StoreFeedState.BindData -> {
-                        storeFeedAdapter.submitList(state.storeFeed)
-                        swipeRefreshLayout.isRefreshing = false
-                    }
-                    is StoreFeedViewModel.StoreFeedState.Error -> {
-                        swipeRefreshLayout.isRefreshing = false
-
-                        Toast.makeText(
-                            requireContext(),
-                            "Error while fetching store feed.",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                    is StoreFeedViewModel.StoreFeedState.Loading -> {
-                        swipeRefreshLayout.isRefreshing = true
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.getStoreFeedState.collect { state ->
+                    when(state) {
+                        is StoreFeedViewModel.StoreFeedState.BindData -> {
+                            storeFeedAdapter.submitList(state.storeFeed)
+                            swipeRefreshLayout.isRefreshing = false
+                        }
+                        is StoreFeedViewModel.StoreFeedState.Error -> {
+                            swipeRefreshLayout.isRefreshing = false
+                            Toast.makeText(
+                                requireContext(),
+                                "Error while fetching store feed.",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                        is StoreFeedViewModel.StoreFeedState.Loading -> {
+                            swipeRefreshLayout.isRefreshing = true
+                        }
                     }
                 }
             }

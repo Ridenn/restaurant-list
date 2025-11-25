@@ -8,6 +8,7 @@ import com.lucas.restaurantlist.Constants.DEFAULT_LONGITUDE
 import com.lucas.restaurantlist.data.model.StoreResponse
 import com.lucas.restaurantlist.domain.usecase.GetStoreFeedUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class StoreFeedViewModel(
@@ -25,7 +26,7 @@ class StoreFeedViewModel(
     }
 
     private val _getStoreFeedState by lazy { MutableStateFlow<StoreFeedState>(StoreFeedState.Loading) }
-    val getStoreFeedState = _getStoreFeedState
+    val getStoreFeedState: StateFlow<StoreFeedState> = _getStoreFeedState
 
     fun getStoreFeed() = viewModelScope.launch {
         _getStoreFeedState.value = StoreFeedState.Loading
