@@ -1,6 +1,8 @@
 package com.lucas.restaurantlist.di
 
+import androidx.room.Room
 import com.lucas.restaurantlist.data.RestaurantServiceFactory
+import com.lucas.restaurantlist.data.local.RestaurantDatabase
 import com.lucas.restaurantlist.data.repository.LoginRepositoryImpl
 import com.lucas.restaurantlist.data.repository.StoreDetailsRepositoryImpl
 import com.lucas.restaurantlist.data.repository.StoreFeedRepositoryImpl
@@ -14,6 +16,7 @@ import com.lucas.restaurantlist.features.login.LoginViewModel
 import com.lucas.restaurantlist.features.login.SessionManagerPreferences
 import com.lucas.restaurantlist.features.storedetails.StoreDetailsViewModel
 import com.lucas.restaurantlist.features.storefeed.StoreFeedViewModel
+import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -21,7 +24,7 @@ val mainModule = module {
     single<SessionManagerPreferences> { SessionManagerPreferences(get()) }
 
     single<LoginRepository> { LoginRepositoryImpl(get(), get()) }
-    single<StoreFeedRepository> { StoreFeedRepositoryImpl(get()) }
+    single<StoreFeedRepository> { StoreFeedRepositoryImpl(get(), get()) }
     single<StoreDetailsRepository> { StoreDetailsRepositoryImpl(get()) }
 
     factory { RestaurantServiceFactory.makeRestaurantService() }
@@ -33,4 +36,15 @@ val mainModule = module {
     viewModel { LoginViewModel(get()) }
     viewModel { StoreFeedViewModel(get()) }
     viewModel { StoreDetailsViewModel(get()) }
+}
+
+val databaseModule = module {
+    single {
+        Room.databaseBuilder(
+            get(),
+            RestaurantDatabase::class.java,
+            "restaurant-db"
+        ).build()
+    }
+    single { get<RestaurantDatabase>().storeDao() }
 }
